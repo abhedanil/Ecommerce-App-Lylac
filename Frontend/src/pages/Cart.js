@@ -32,7 +32,8 @@ const deleteProducFromCart=async(product)=>{
         const token = localStorage.getItem("JwtToken");
         console.log(product);
         const body={
-            id:product._id
+            id:product._id,
+            proid:product.product
         }
         const result=await axios.post(`${Rest}/api/user/deleteproCart`,body,{
             headers:{

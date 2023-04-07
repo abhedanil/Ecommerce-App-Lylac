@@ -111,11 +111,14 @@ const handleRefreshToken = asyncHandler(async (req, res) => {
         object.product = cart.productId;
         object.quantity = 1;
         let getPrice = await Product.findById(cart.productId).select("price").exec();
+        let pro=await Product.findById(cart.productId)
+        console.log(pro.quantity-1)
+        let newquantity= pro.quantity-1
         object.price = getPrice.price;
         products.push(object);
         console.log(products,"hhhh");
      
-      
+       
       let cartTotal = 0;
       for (let i = 0; i < products.length; i++) {
         cartTotal = cartTotal + products[i].price ;
@@ -123,6 +126,11 @@ const handleRefreshToken = asyncHandler(async (req, res) => {
 
       console.log(cartTotal)
       if(alreadyExistCart){
+        const decreaseCount= await Product.findByIdAndUpdate({_id:cart.productId},
+            {
+                quantity:newquantity
+            })
+        
         let updatedCart = await Cart.findByIdAndUpdate({ _id:alreadyExistCart._id },
             {products:products,
                 cartTotal:cartTotal,
@@ -160,15 +168,29 @@ const handleRefreshToken = asyncHandler(async (req, res) => {
   const deleteProductFromCart = asyncHandler(async (req, res) => {
     const { _id } = req.user;
     const productId =req.body.id
-    console.log(req.body);
+    const proID=req.body.proid._id
+    console.log(proID,"ppppp")
+    console.log(req.body,"bbbbb");
     console.log(productId);
     const alreadyExistCart = await Cart.findOne({ orderby:_id });
+    let pro=await Product.findById(proID)
+        console.log(pro.quantity-1)
+        let newquantity= pro.quantity+1
     let  products= alreadyExistCart.products
     let filtered_arr = products.filter( function(pro) { //callback function
         if(pro._id!=(productId)) { //filtering criteria
           return pro;
         }
-      }) 
+      })
+      if(productId){
+        const increaseCount= await Product.findByIdAndUpdate({_id:proID},
+            {
+                quantity:newquantity
+            })
+      }
+      
+        
+     
       let updatedCart = await Cart.findByIdAndUpdate({ _id:alreadyExistCart._id },
         {products:filtered_arr,
            

@@ -8,7 +8,7 @@ const ProductCard = (props) => {
         console.log(newRating);
     };   
     const product=props.product
-
+const [newRender,setNewRender]= useState()
 const handleAddToCart =async()=>{
     const token = localStorage.getItem("JwtToken");
             console.log(token)
@@ -25,12 +25,16 @@ const handleAddToCart =async()=>{
                })   
                if(result){
                 alert("Product added to cart")
+                setNewRender(true)
                }
             } 
             else{
                 alert("Please login to add this product to cart")}
 }
 
+useEffect(()=>{
+
+},[newRender])
     return (
         <div className='col-3'>
             <div className="product-card d-flex">
